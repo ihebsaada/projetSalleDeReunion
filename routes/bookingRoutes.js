@@ -6,6 +6,19 @@ const Booking = require('../routes/bookingRoutes')
 router.post('/bookings', async (req, res) => {
     try {
         const { roomId, userId, startTime, endTime } = req.body;
+        // Vérifier si la salle de réunion est disponible pour la plage horaire spécifiée
+        const existingBooking = await Booking.findOne({
+            roomId: roomId,
+            $or: [
+                { startTime: { $lt: endTime }, endTime: { $gt: startTime } },
+                { startTime: { $gte: startTime, $lte: endTime } }
+            ]
+        });
+
+        // S'il y a une réservation existante pour la salle de réunion et la plage horaire spécifiée, renvoyer un message d'erreur
+        if (existingBooking) {
+            return res.status(400).json({ message: "La salle de réunion est déjà réservée pour cette période." });
+        }
         const newBooking = new Booking({ roomId, userId, startTime, endTime });
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);
