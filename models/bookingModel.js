@@ -11,16 +11,6 @@ const bookingSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    user: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
-        required: true 
-    },
-    room: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Room', 
-        required: true 
-    },
     startTime: {
          type: Date, 
          required: true 
@@ -29,6 +19,10 @@ const bookingSchema = new mongoose.Schema({
         type: Date, 
         required: true 
     },
+    isActive: { 
+        type: Boolean, 
+        default: true
+    }
 });
 
 const Booking = mongoose.model('Booking', bookingSchema);

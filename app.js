@@ -1,27 +1,31 @@
 const  express = require('express')
 const app = express()
+const cors = require('cors');
 const env = require('dotenv')
 const mongoose = require('mongoose')
 const roomRoutes = require('./routes/routerRoom')
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const bookingRoutes = require('./routes/bookingRoutes')
 //variable env
 env.config();
 
-//mongodb connection
+
 mongoose.connect(
-    `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@cluster0.wfh2zts.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`, 
+    `mongodb+srv://hubo:hubo123@hubo.outjy7z.mongodb.net/?retryWrites=true&w=majority&appName=HUBO`, 
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-  
     .then(() => console.log('Connecté à MongoDB'))
     .catch(err => console.error('Erreur de connexion à MongoDB', err));
 
 //middelware
 app.use(express.json())
-app.use('/auth', authRoutes);
+app.use(cors());
+app.options("*", cors());
+app.use('/api', authRoutes);
+app.use('/api', userRoutes);
 //app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // Utiliser les routes pour les salles de réunion
